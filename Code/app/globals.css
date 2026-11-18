@@ -131,6 +131,7 @@
   /* Sections stack like sheets of paper sliding over one another. */
   .sheet {
     position: relative;
+    overflow-x: clip;
     margin-top: -3rem;
     border-radius: 3rem 3rem 0 0;
     box-shadow:

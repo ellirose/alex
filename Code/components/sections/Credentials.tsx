@@ -51,7 +51,7 @@ export function Credentials() {
                 <p className="mt-3 text-lg font-bold text-ink">{c.school}</p>
                 <p className="mt-1 text-base text-slate">{c.place} · 2016</p>
               </div>
-              <div className="absolute -right-3 -top-10 rotate-12">
+              <div className="absolute -right-1 -top-10 rotate-12 sm:-right-3">
                 <Seal />
               </div>
             </div>

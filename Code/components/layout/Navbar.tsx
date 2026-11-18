@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { Logo } from '@/components/ui/Logo';
 
-export const NAV_SECTIONS = ['about', 'expertise', 'experience', 'work', 'reel', 'toolkit'] as const;
+export const NAV_SECTIONS = ['about', 'expertise', 'experience', 'work', 'concepts', 'reel', 'toolkit'] as const;
 type SectionId = (typeof NAV_SECTIONS)[number];
 
 export function Navbar() {
@@ -85,7 +85,7 @@ export function Navbar() {
             <Logo tagline={t.hero.role} />
           </a>
 
-          <div ref={links} className="relative hidden items-center lg:flex">
+          <div ref={links} className="relative hidden items-center xl:flex">
             <span
               aria-hidden
               className="absolute top-1/2 h-11 -translate-y-1/2 rounded-full bg-ink shadow-soft transition-all duration-500 ease-out-expo"
@@ -115,7 +115,7 @@ export function Navbar() {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? t.nav.close : t.nav.menu}
-              className="grid size-12 place-items-center rounded-full bg-ink text-snow transition-transform duration-300 active:scale-95 lg:hidden"
+              className="grid size-12 place-items-center rounded-full bg-ink text-snow transition-transform duration-300 active:scale-95 xl:hidden"
             >
               <span className="burger" data-open={open || undefined}>
                 <span />
@@ -128,7 +128,7 @@ export function Navbar() {
         <div
           id="mobile-menu"
           data-open={open || undefined}
-          className="pop-panel mx-auto mt-3 max-w-7xl origin-top rounded-[2rem] bg-snow p-4 shadow-lift ring-1 ring-ink/5 lg:hidden"
+          className="pop-panel mx-auto mt-3 max-w-7xl origin-top rounded-[2rem] bg-snow p-4 shadow-lift ring-1 ring-ink/5 xl:hidden"
         >
           <ul>
             {NAV_SECTIONS.map((id, i) => (

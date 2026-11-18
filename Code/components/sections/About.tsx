@@ -61,7 +61,7 @@ function PostcardStack({ caption, altWindow, altDesk }: { caption: string; altWi
           33.45° S
         </figcaption>
 
-        <div className="drop-soft absolute -right-5 -top-6 rotate-[8deg]">
+        <div className="drop-soft absolute -right-2 -top-6 rotate-[8deg] sm:-right-5">
           <div className="stamp stamp-sm w-[86px] bg-snow">
             <div className="flex aspect-[4/5] flex-col items-center justify-center gap-1.5 bg-pacific-soft">
               <Flag country="cl" className="size-10" />
