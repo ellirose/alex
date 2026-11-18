@@ -1,54 +1,34 @@
 'use client';
 
-import { useEffect, useRef, useState, type ComponentType } from 'react';
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 import { useI18n } from '@/lib/i18n';
+import { CATEGORIES, galleryFor, type Category, type GalleryItem } from '@/lib/gallery';
 import { cn, d } from '@/lib/utils';
-import {
-  AndesOutfitters,
-  AtacamaPoster,
-  CafeUniform,
-  CobreCosta,
-  MercadoPuerto,
-  RutaApp,
-} from '@/components/concepts/Art';
 import { Tilt } from '@/components/motion/Tilt';
 import { IconArrow, IconChevron, IconDesign, IconSparkle } from '@/components/ui/Icons';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 
-type Category = 'branding' | 'interface' | 'apparel' | 'print';
-
-/**
- * Gallery entries. `Art` is original SVG concept work; to add a real project later,
- * create an entry with your own component (or a next/image wrapper) and a description in lib/dictionaries.ts.
- */
-const ENTRIES: { title: string; category: Category; tall?: boolean; Art: ComponentType }[] = [
-  { title: 'Cobre & Costa', category: 'branding', Art: CobreCosta },
-  { title: 'Noches de Atacama', category: 'print', tall: true, Art: AtacamaPoster },
-  { title: 'Ruta', category: 'interface', Art: RutaApp },
-  { title: 'Andes Outfitters', category: 'branding', Art: AndesOutfitters },
-  { title: 'Café Cerro Alegre', category: 'apparel', Art: CafeUniform },
-  { title: 'Mercado Puerto', category: 'interface', Art: MercadoPuerto },
-];
-// Description index in dictionaries (kept in narrative order there).
-const DESC_INDEX = [0, 5, 2, 1, 4, 3];
+/** Pieces shown before "Show all" is pressed. */
+const PREVIEW_COUNT = 12;
 
 const FILTER_COLORS: Record<Category | 'all', string> = {
   all: '#1E2B3A',
   branding: '#BC5C33',
-  interface: '#2A7C8E',
-  apparel: '#D9705C',
-  print: '#C99016',
+  logos: '#C99016',
+  posters: '#D9705C',
+  web: '#2A7C8E',
+  mobile: '#5B7FA6',
+  fashion: '#A0526E',
+  sportswear: '#3F7F63',
+  uniforms: '#4A5868',
 };
 
-function Frame({ tall, children, large }: { tall?: boolean; children: React.ReactNode; large?: boolean }) {
+const pad = (n: number) => String(n).padStart(2, '0');
+
+function Frame({ item, children }: { item: GalleryItem; children: React.ReactNode }) {
   return (
-    <div
-      className={cn(
-        'relative overflow-hidden bg-sand',
-        tall ? 'aspect-[3/4] rounded-b-[1.4rem] rounded-t-[999px]' : 'aspect-[4/3] rounded-[1.4rem]',
-        large && tall && 'mx-auto max-h-[70vh] w-auto',
-      )}
-    >
+    <div className="relative overflow-hidden rounded-[1.4rem] bg-sand" style={{ aspectRatio: `${item.w} / ${item.h}` }}>
       {children}
     </div>
   );
@@ -61,7 +41,7 @@ function Lightbox({
   onNav,
 }: {
   index: number;
-  items: typeof ENTRIES;
+  items: GalleryItem[];
   onClose: () => void;
   onNav: (dir: 1 | -1) => void;
 }) {
@@ -87,22 +67,26 @@ function Lightbox({
   }, [onClose, onNav]);
 
   if (!item) return null;
-  const desc = c.items[DESC_INDEX[ENTRIES.indexOf(item)]];
+  const title = `${c.filters[item.category]} ${pad(item.index + 1)}`;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={item.title}
+      aria-label={title}
       onClick={(e) => e.target === e.currentTarget && onClose()}
       className="fixed inset-0 z-[90] grid place-items-center overflow-y-auto bg-ink/55 p-4 backdrop-blur-md"
     >
-      <div key={item.title} className="chip-in relative grid w-full max-w-5xl overflow-hidden rounded-[2rem] bg-snow shadow-lift md:grid-cols-[1.45fr_1fr]">
+      <div key={item.src} className="chip-in relative grid w-full max-w-5xl overflow-hidden rounded-[2rem] bg-snow shadow-lift md:grid-cols-[1.45fr_1fr]">
         <div className="tex-paper flex items-center justify-center p-4 sm:p-6">
-          <div className={cn('w-full', item.tall && 'max-w-[22rem]')}>
-            <Frame tall={item.tall}>
-              <item.Art />
-            </Frame>
+          <div className="relative h-[min(70vh,40rem)] w-full">
+            <Image
+              src={item.src}
+              alt={title}
+              fill
+              sizes="(min-width: 768px) 560px, 92vw"
+              className="rounded-[1.4rem] object-contain"
+            />
           </div>
         </div>
         <div className="flex flex-col p-7 sm:p-9">
@@ -112,15 +96,15 @@ function Lightbox({
           >
             {c.filters[item.category]}
           </span>
-          <h3 className="mt-5 font-display text-[2.2rem] font-medium leading-[1.05] tracking-tight">{item.title}</h3>
-          <p className="mt-4 text-lg leading-relaxed text-slate">{desc}</p>
+          <h3 className="mt-5 font-display text-[2.2rem] font-medium leading-[1.05] tracking-tight">{title}</h3>
+          <p className="mt-4 text-lg leading-relaxed text-slate">{c.items[item.category]}</p>
           <p className="mt-6 flex items-center gap-2 text-sm font-bold text-copper">
             <IconSparkle className="size-4" />
             {c.label}
           </p>
           <div className="mt-auto flex items-center justify-between gap-3 pt-10">
             <span className="text-sm font-bold tabular-nums text-mist">
-              0{index + 1} / 0{items.length}
+              {pad(index + 1)} / {pad(items.length)}
             </span>
             <div className="flex gap-2">
               <button
@@ -164,9 +148,11 @@ export function Concepts() {
   const c = t.concepts;
   const [filter, setFilter] = useState<Category | 'all'>('all');
   const [open, setOpen] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
-  const items = filter === 'all' ? ENTRIES : ENTRIES.filter((e) => e.category === filter);
-  const filters: (Category | 'all')[] = ['all', 'branding', 'interface', 'apparel', 'print'];
+  const items = galleryFor(filter);
+  const shown = expanded ? items : items.slice(0, PREVIEW_COUNT);
+  const filters: (Category | 'all')[] = ['all', ...CATEGORIES];
 
   return (
     <section id="concepts" className="sheet tex-paper">
@@ -193,7 +179,10 @@ export function Concepts() {
                 type="button"
                 role="tab"
                 aria-selected={sel}
-                onClick={() => setFilter(f)}
+                onClick={() => {
+                  setFilter(f);
+                  setExpanded(false);
+                }}
                 className={cn(
                   'rounded-full px-5 py-2.5 text-[15px] font-bold transition-all duration-500 ease-out-expo',
                   sel ? 'text-snow shadow-soft' : 'text-ink/75 hover:bg-sand',
@@ -207,40 +196,62 @@ export function Concepts() {
         </div>
 
         <ul key={filter} className="mt-12 columns-1 gap-7 sm:columns-2 lg:columns-3 [&>li]:mb-7 [&>li]:break-inside-avoid">
-          {items.map((item, i) => (
-            <li key={item.title} className="chip-in" style={d(i * 70)}>
-              <button type="button" onClick={() => setOpen(i)} aria-label={`${c.open}: ${item.title}`} className="group block w-full text-left">
-                <Tilt max={5} className="drop-soft">
-                  <figure className="rounded-[2rem] bg-snow p-3 transition-transform duration-700 ease-out-expo group-hover:-translate-y-1">
-                    <Frame tall={item.tall}>
-                      <div className="absolute inset-0 transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.04]">
-                        <item.Art />
-                      </div>
-                      <span className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-snow/92 px-3 py-1 text-xs font-extrabold text-ink shadow-soft backdrop-blur">
-                        <IconSparkle className="size-3.5 text-copper" />
-                        {c.label}
-                      </span>
-                    </Frame>
-                    <figcaption className="px-3 pb-3 pt-5">
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-xs font-extrabold uppercase tracking-[0.18em]" style={{ color: FILTER_COLORS[item.category] }}>
-                          {c.filters[item.category]}
+          {shown.map((item, i) => {
+            const title = `${c.filters[item.category]} ${pad(item.index + 1)}`;
+            return (
+              <li key={item.src} className="chip-in" style={d(Math.min(i, PREVIEW_COUNT) * 70)}>
+                <button type="button" onClick={() => setOpen(i)} aria-label={`${c.open}: ${title}`} className="group block w-full text-left">
+                  <Tilt max={5} className="drop-soft">
+                    <figure className="rounded-[2rem] bg-snow p-3 transition-transform duration-700 ease-out-expo group-hover:-translate-y-1">
+                      <Frame item={item}>
+                        <div className="absolute inset-0 transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.04]">
+                          <Image
+                            src={item.src}
+                            alt={title}
+                            fill
+                            sizes="(min-width: 1024px) 380px, (min-width: 640px) 46vw, 92vw"
+                            className="object-cover"
+                          />
+                        </div>
+                        <span className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-snow/92 px-3 py-1 text-xs font-extrabold text-ink shadow-soft backdrop-blur">
+                          <IconSparkle className="size-3.5 text-copper" />
+                          {c.label}
                         </span>
-                        <span className="grid size-9 place-items-center rounded-full bg-ink text-snow transition-transform duration-500 ease-out-expo group-hover:-rotate-45">
-                          <IconArrow className="size-4" />
-                        </span>
-                      </div>
-                      <h3 className="mt-2 font-display text-[1.6rem] font-medium leading-tight tracking-tight">{item.title}</h3>
-                      <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-slate">
-                        {c.items[DESC_INDEX[ENTRIES.indexOf(item)]]}
-                      </p>
-                    </figcaption>
-                  </figure>
-                </Tilt>
-              </button>
-            </li>
-          ))}
+                      </Frame>
+                      <figcaption className="px-3 pb-3 pt-5">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-xs font-extrabold uppercase tracking-[0.18em]" style={{ color: FILTER_COLORS[item.category] }}>
+                            {c.filters[item.category]}
+                          </span>
+                          <span className="grid size-9 place-items-center rounded-full bg-ink text-snow transition-transform duration-500 ease-out-expo group-hover:-rotate-45">
+                            <IconArrow className="size-4" />
+                          </span>
+                        </div>
+                        <h3 className="mt-2 font-display text-[1.6rem] font-medium leading-tight tracking-tight">{title}</h3>
+                        <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-slate">{c.items[item.category]}</p>
+                      </figcaption>
+                    </figure>
+                  </Tilt>
+                </button>
+              </li>
+            );
+          })}
         </ul>
+
+        {!expanded && items.length > PREVIEW_COUNT && (
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="group inline-flex items-center gap-4 rounded-full bg-ink py-2 pl-7 pr-2 text-lg font-semibold text-snow shadow-lift transition-transform duration-500 ease-out-expo hover:-translate-y-1"
+            >
+              {c.more} ({items.length})
+              <span className="grid size-12 place-items-center rounded-full bg-copper transition-transform duration-500 ease-out-expo group-hover:rotate-90">
+                <IconArrow className="size-5 rotate-90" />
+              </span>
+            </button>
+          </div>
+        )}
       </div>
 
       {open !== null && (
