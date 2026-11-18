@@ -193,7 +193,7 @@ const en = {
   toolkit: {
     kicker: 'Toolkit',
     title: 'The tools behind the craft.',
-    body: 'A full-stack creative toolkit. Spin the globe or choose a discipline to see where each tool fits.',
+    body: 'A full-stack creative toolkit. Spin the sand garden or choose a discipline to see where each tool fits.',
     hint: 'Drag to rotate',
     all: 'All',
     groups: { design: 'Design', video: 'Video', web: 'Web', marketing: 'Marketing', ops: 'Operations' },
@@ -449,7 +449,7 @@ const pt: Dictionary = {
   toolkit: {
     kicker: 'Ferramentas',
     title: 'As ferramentas por trás do ofício.',
-    body: 'Um kit criativo completo. Gire o globo ou escolha uma disciplina para ver onde cada ferramenta se encaixa.',
+    body: 'Um kit criativo completo. Gire o jardim de areia ou escolha uma disciplina para ver onde cada ferramenta se encaixa.',
     hint: 'Arraste para girar',
     all: 'Todas',
     groups: { design: 'Design', video: 'Vídeo', web: 'Web', marketing: 'Marketing', ops: 'Operações' },
@@ -703,7 +703,7 @@ const es: Dictionary = {
   toolkit: {
     kicker: 'Herramientas',
     title: 'Las herramientas detrás del oficio.',
-    body: 'Un kit creativo completo. Gira el globo o elige una disciplina para ver dónde encaja cada herramienta.',
+    body: 'Un kit creativo completo. Gira el jardín de arena o elige una disciplina para ver dónde encaja cada herramienta.',
     hint: 'Arrastra para girar',
     all: 'Todas',
     groups: { design: 'Diseño', video: 'Video', web: 'Web', marketing: 'Marketing', ops: 'Operaciones' },

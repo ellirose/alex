@@ -9,9 +9,13 @@ export type Frame = { ctx: CanvasRenderingContext2D; w: number; h: number; t: nu
  * DPR-aware sizing, pauses off-screen / in background tabs, and draws a single
  * still frame when the visitor prefers reduced motion.
  */
-export function useCanvas(draw: (f: Frame) => void, { animate = true, maxDpr = 2 } = {}) {
+export function useCanvas(
+  draw: (f: Frame) => void,
+  { animate = true, maxDpr = 2, redraw }: { animate?: boolean; maxDpr?: number; redraw?: unknown } = {},
+) {
   const ref = useRef<HTMLCanvasElement>(null);
   const drawRef = useRef(draw);
+  const renderRef = useRef<((now: number) => void) | null>(null);
   useLayoutEffect(() => {
     drawRef.current = draw;
   });
@@ -38,6 +42,7 @@ export function useCanvas(draw: (f: Frame) => void, { animate = true, maxDpr = 2
       ctx.clearRect(0, 0, w, h);
       drawRef.current({ ctx, w, h, t, dt });
     };
+    renderRef.current = render;
     const loop = (now: number) => {
       render(now);
       raf = requestAnimationFrame(loop);
@@ -82,8 +87,14 @@ export function useCanvas(draw: (f: Frame) => void, { animate = true, maxDpr = 2
       ro.disconnect();
       io.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
+      renderRef.current = null;
     };
   }, [animate, maxDpr]);
+
+  // Paint a fresh frame when `redraw` changes (matters when the loop is paused, e.g. reduced motion).
+  useEffect(() => {
+    renderRef.current?.(performance.now());
+  }, [redraw]);
 
   return ref;
 }
