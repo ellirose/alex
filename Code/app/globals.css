@@ -1,0 +1,523 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/*  Design tokens — a bright palette drawn from Chile:                 */
+/*  Atacama sand, Andes snow-shadow, Pacific teal, Chilean copper and  */
+/*  the painted houses of Valparaíso (sun yellow, coral).              */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-paper: #f7f2e8;
+  --color-sand: #efe5d3;
+  --color-dune: #e3d3ba;
+  --color-snow: #fffdf8;
+  --color-ink: #1e2b3a;
+  --color-slate: #4a5868;
+  --color-mist: #8c98a6;
+  --color-copper: #bc5c33;
+  --color-copper-soft: #ebc3ab;
+  --color-pacific: #2a7c8e;
+  --color-pacific-soft: #c6e0e4;
+  --color-andes: #9fb4cc;
+  --color-andes-soft: #dce5ef;
+  --color-sun: #e9b23c;
+  --color-sun-soft: #f6e0ae;
+  --color-coral: #d9705c;
+  --color-coral-soft: #f2cfc6;
+
+  --shadow-soft: 0 1px 2px rgb(30 43 58 / 0.05), 0 6px 16px -4px rgb(30 43 58 / 0.08),
+    0 18px 40px -16px rgb(30 43 58 / 0.14);
+  --shadow-lift: 0 2px 4px rgb(30 43 58 / 0.05), 0 14px 30px -8px rgb(30 43 58 / 0.14),
+    0 40px 70px -30px rgb(30 43 58 / 0.26);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    background: var(--color-paper);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  main,
+  footer {
+    transition: opacity 0.22s ease;
+  }
+  html.lang-swap main,
+  html.lang-swap footer {
+    opacity: 0.2;
+  }
+
+  ::selection {
+    background: var(--color-copper);
+    color: var(--color-snow);
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--color-pacific);
+    outline-offset: 3px;
+    border-radius: 12px;
+  }
+
+  /* Custom scrollbar (WebKit/Blink) */
+  ::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-sand);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-copper);
+    border-radius: 999px;
+    border: 4px solid var(--color-sand);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a44d28;
+  }
+  /* Firefox only — Blink would otherwise drop the rounded thumb above. */
+  @supports (-moz-appearance: none) {
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-copper) var(--color-sand);
+    }
+  }
+
+  .font-display {
+    font-variation-settings: "SOFT" 60;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Components                                                         */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .container-x {
+    margin-inline: auto;
+    max-width: 80rem;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 40rem) {
+    .container-x {
+      padding-inline: 2rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .container-x {
+      padding-inline: 3rem;
+    }
+  }
+
+  /* Sections stack like sheets of paper sliding over one another. */
+  .sheet {
+    position: relative;
+    margin-top: -3rem;
+    border-radius: 3rem 3rem 0 0;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.7),
+      0 -22px 46px -30px rgb(30 43 58 / 0.32);
+  }
+  @media (min-width: 64rem) {
+    .sheet {
+      margin-top: -4rem;
+      border-radius: 4.5rem 4.5rem 0 0;
+    }
+  }
+
+  /* ---------- Textures ---------- */
+  .tex-paper {
+    background-color: var(--color-paper);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .33 0 0 0 0 .26 0 0 0 0 .18 0 0 0 .5 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .tex-sand {
+    background-color: #ece1cd;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .33 0 0 0 0 .26 0 0 0 0 .18 0 0 0 .55 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Lime-washed plaster wall, lit from the upper left. */
+  .tex-plaster {
+    background-color: #f5efe5;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .33 0 0 0 0 .26 0 0 0 0 .18 0 0 0 .45 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009' numOctaves='5' seed='4' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23ffffff' surfaceScale='2.6' diffuseConstant='1.13'%3E%3CfeDistantLight azimuth='225' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    background-blend-mode: normal, multiply;
+  }
+
+  /* Woven linen. */
+  .tex-linen {
+    background-color: #f3ecdf;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .33 0 0 0 0 .26 0 0 0 0 .18 0 0 0 .45 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(0deg, rgb(140 110 70 / 0.06) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgb(140 110 70 / 0.05) 0 1px, transparent 1px 3px);
+  }
+
+  /* Pale oak planks. */
+  .tex-wood {
+    background-color: #ecdcc4;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .33 0 0 0 0 .26 0 0 0 0 .18 0 0 0 .45 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(180deg, transparent 0 159px, rgb(120 80 45 / 0.13) 159px 160px),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2000' height='320'%3E%3Cfilter id='w' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.002 .1' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .52 0 0 0 0 .35 0 0 0 0 .19 1.5 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='.42'/%3E%3C/svg%3E");
+    background-size: 220px 220px, auto, 2000px 320px;
+  }
+
+  /* Draughtsman's grid paper. */
+  .tex-grid {
+    background-color: #f6f2ea;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .33 0 0 0 0 .26 0 0 0 0 .18 0 0 0 .45 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      linear-gradient(rgb(42 124 142 / 0.075) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(42 124 142 / 0.075) 1px, transparent 1px);
+    background-size: 220px 220px, 44px 44px, 44px 44px;
+  }
+
+  /* ---------- Shadows that follow masked / clipped shapes ---------- */
+  .drop-soft {
+    filter: drop-shadow(0 2px 3px rgb(30 43 58 / 0.06)) drop-shadow(0 16px 22px rgb(30 43 58 / 0.11));
+  }
+  .drop-lift {
+    filter: drop-shadow(0 3px 4px rgb(30 43 58 / 0.07)) drop-shadow(0 26px 32px rgb(30 43 58 / 0.17));
+  }
+
+  /* ---------- Card shapes ---------- */
+
+  /* Expertise: a concave scoop that cradles the icon medallion. */
+  .scoop {
+    -webkit-mask: radial-gradient(circle at 5.25rem 0, #0000 3.95rem, #000 calc(3.95rem + 1px));
+    mask: radial-gradient(circle at 5.25rem 0, #0000 3.95rem, #000 calc(3.95rem + 1px));
+  }
+
+  /* Work: two halves of an admission ticket with punched notches. */
+  .ticket-top {
+    -webkit-mask:
+      radial-gradient(circle at 0 100%, #0000 1.1rem, #000 calc(1.1rem + 0.5px)) left / 51% 100% no-repeat,
+      radial-gradient(circle at 100% 100%, #0000 1.1rem, #000 calc(1.1rem + 0.5px)) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle at 0 100%, #0000 1.1rem, #000 calc(1.1rem + 0.5px)) left / 51% 100% no-repeat,
+      radial-gradient(circle at 100% 100%, #0000 1.1rem, #000 calc(1.1rem + 0.5px)) right / 51% 100% no-repeat;
+  }
+  .ticket-bottom {
+    -webkit-mask:
+      radial-gradient(circle at 0 0, #0000 1.1rem, #000 calc(1.1rem + 0.5px)) left / 51% 100% no-repeat,
+      radial-gradient(circle at 100% 0, #0000 1.1rem, #000 calc(1.1rem + 0.5px)) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle at 0 0, #0000 1.1rem, #000 calc(1.1rem + 0.5px)) left / 51% 100% no-repeat,
+      radial-gradient(circle at 100% 0, #0000 1.1rem, #000 calc(1.1rem + 0.5px)) right / 51% 100% no-repeat;
+  }
+
+  /* Journey: a map note with a folded corner. */
+  .dogear {
+    clip-path: polygon(0 0, calc(100% - 3rem) 0, 100% 3rem, 100% 100%, 0 100%);
+  }
+
+  /* Credentials: perforated postage stamp. */
+  .stamp {
+    --r: 6px;
+    --s: 18px;
+    padding: 12px;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      radial-gradient(circle var(--r), #0000 96%, #000) calc(var(--s) / -2) calc(var(--s) / -2) / var(--s) var(--s) round;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      radial-gradient(circle var(--r), #0000 96%, #000) calc(var(--s) / -2) calc(var(--s) / -2) / var(--s) var(--s) round;
+  }
+  .stamp-sm {
+    --r: 4px;
+    --s: 12px;
+    padding: 7px;
+  }
+
+  /* Languages: luggage tag. */
+  .tag-shape {
+    clip-path: polygon(1.75rem 0, 100% 0, 100% 100%, 1.75rem 100%, 0 50%);
+  }
+
+  /* Film strip sprocket holes. */
+  .sprockets {
+    height: 26px;
+    background-image: repeating-linear-gradient(90deg, transparent 0 12px, rgb(255 253 248 / 0.88) 12px 30px, transparent 30px 42px);
+    -webkit-mask: linear-gradient(transparent 0 8px, #000 8px 18px, transparent 18px);
+    mask: linear-gradient(transparent 0 8px, #000 8px 18px, transparent 18px);
+  }
+
+  /* ---------- 3D tilt ---------- */
+  .tilt {
+    transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 0.7s var(--ease-out-expo);
+    will-change: transform;
+  }
+  .tilt[data-active] {
+    transition-duration: 0.18s;
+  }
+  .depth-1 {
+    transform: translateZ(34px);
+  }
+  .depth-2 {
+    transform: translateZ(64px);
+  }
+
+  /* ---------- Custom dropdown & mobile sheet ---------- */
+  .pop-panel {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-8px) scale(0.96);
+    transition:
+      opacity 0.25s ease,
+      transform 0.45s var(--ease-out-expo),
+      visibility 0s linear 0.25s;
+  }
+  .pop-panel[data-open] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .pop-panel > * {
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.3s ease,
+      transform 0.5s var(--ease-out-expo);
+  }
+  .pop-panel[data-open] > * {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(var(--i, 0) * 45ms + 60ms);
+  }
+
+  .burger {
+    position: relative;
+    width: 20px;
+    height: 14px;
+  }
+  .burger span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.45s var(--ease-out-expo),
+      top 0.45s var(--ease-out-expo);
+  }
+  .burger span:first-child {
+    top: 2px;
+  }
+  .burger span:last-child {
+    top: 10px;
+  }
+  .burger[data-open] span:first-child {
+    top: 6px;
+    transform: rotate(45deg);
+  }
+  .burger[data-open] span:last-child {
+    top: 6px;
+    transform: rotate(-45deg);
+  }
+
+  /* ---------- Reveal on scroll ---------- */
+  [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 34px, 0);
+    filter: blur(6px);
+    transition:
+      opacity 0.9s var(--ease-out-expo),
+      transform 1.2s var(--ease-out-expo),
+      filter 0.9s var(--ease-out-expo);
+    transition-delay: var(--d, 0ms);
+  }
+  [data-reveal="scale"] {
+    transform: translate3d(0, 24px, 0) scale(0.94);
+  }
+  [data-reveal="left"] {
+    transform: translate3d(-48px, 0, 0);
+  }
+  [data-reveal="right"] {
+    transform: translate3d(48px, 0, 0);
+  }
+  [data-reveal="mask"] {
+    transform: none;
+    filter: none;
+    clip-path: inset(0 0 100% 0 round 2rem);
+    transition: clip-path 1.3s var(--ease-out-expo), opacity 0.6s ease;
+    transition-delay: var(--d, 0ms);
+  }
+  [data-reveal][data-in] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  [data-reveal="mask"][data-in] {
+    clip-path: inset(0 0 0 0 round 0);
+  }
+
+  /* Meter bars fill once revealed. */
+  .meter-fill {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.6s var(--ease-out-expo) 0.3s;
+  }
+  [data-in] .meter-fill {
+    transform: scaleX(var(--v, 1));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Keyframes & motion utilities                                       */
+/* ------------------------------------------------------------------ */
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+@keyframes bar {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+.anim-float {
+  animation: float 7s ease-in-out infinite;
+}
+.anim-spin-slow {
+  animation: spin 28s linear infinite;
+}
+.anim-spin-slower {
+  animation: spin 60s linear infinite;
+}
+.anim-ping {
+  animation: ping-soft 2.4s var(--ease-out-expo) infinite;
+}
+.anim-bar {
+  transform-origin: bottom;
+  animation: bar 2.2s ease-in-out infinite;
+}
+.anim-scroll-dot {
+  animation: scroll-dot 1.8s ease-in-out infinite;
+}
+.anim-blink {
+  animation: blink 1.2s steps(2, start) infinite;
+}
+.chip-in {
+  animation: chip-in 0.6s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+.draw-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.4s var(--ease-out-expo) 1s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  [data-reveal],
+  [data-reveal][data-in] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    clip-path: none;
+    transition: none;
+  }
+  .anim-float,
+  .anim-spin-slow,
+  .anim-spin-slower,
+  .anim-ping,
+  .anim-bar,
+  .anim-scroll-dot,
+  .anim-blink,
+  .chip-in {
+    animation: none;
+  }
+  .draw-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .meter-fill {
+    transition: none;
+  }
+}
