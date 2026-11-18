@@ -8,7 +8,15 @@ import { Flag } from './Flag';
 import { IconCheck, IconChevron } from './Icons';
 
 /** A bespoke flag dropdown (menu) or a row of flag pills (inline). */
-export function LanguageSwitcher({ variant = 'menu', className }: { variant?: 'menu' | 'inline'; className?: string }) {
+export function LanguageSwitcher({
+  variant = 'menu',
+  compact = false,
+  className,
+}: {
+  variant?: 'menu' | 'inline';
+  compact?: boolean;
+  className?: string;
+}) {
   const { locale, setLocale, t } = useI18n();
   const [open, setOpen] = useState(false);
   const wrap = useRef<HTMLDivElement>(null);
@@ -44,13 +52,15 @@ export function LanguageSwitcher({ variant = 'menu', className }: { variant?: 'm
               role="radio"
               aria-checked={active}
               onClick={() => setLocale(l.code)}
+              aria-label={l.native}
               className={cn(
-                'flex items-center gap-2.5 rounded-full py-1.5 pl-1.5 pr-4 text-[15px] font-semibold transition-all duration-300',
+                'flex items-center rounded-full font-semibold transition-all duration-300',
+                compact ? 'gap-2 py-1 pl-1 pr-3 text-xs font-extrabold tracking-wider' : 'gap-2.5 py-1.5 pl-1.5 pr-4 text-[15px]',
                 active ? 'bg-ink text-snow shadow-soft' : 'bg-snow/70 text-ink hover:-translate-y-0.5 hover:bg-snow',
               )}
             >
-              <Flag country={l.country} className="size-9" />
-              {l.native}
+              <Flag country={l.country} className={compact ? 'size-7' : 'size-9'} />
+              {compact ? l.short : l.native}
             </button>
           );
         })}
